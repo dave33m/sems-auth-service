@@ -30,6 +30,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_PERMISSION_CLASSES": [],
+}
+
 
 # Application definition
 
@@ -43,6 +48,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'authcore',
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -56,6 +62,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'sems_auth_service.urls'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 TEMPLATES = [
     {
