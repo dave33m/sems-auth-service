@@ -34,12 +34,12 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "authcore.auth.ClientBearerAuthentication",
-        "authcore.auth.UserBearerAuthentication"
-        ],
+        "authcore.authentication.ClientBearerAuthentication",
+        "authcore.authentication.UserBearerAuthentication",
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny"
-        ],
+        "rest_framework.permissions.AllowAny",
+    ],
 }
 
 
