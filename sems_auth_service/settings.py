@@ -139,6 +139,19 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
+# Trust Railway proxy for scheme/host
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+
+BASE_URL = os.getenv("BASE_URL")
+
+SWAGGER_SETTINGS = {
+    "DEFAULT_API_URL": BASE_URL,
+}
+
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
