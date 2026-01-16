@@ -33,8 +33,13 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [],
-    "DEFAULT_PERMISSION_CLASSES": [],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "authcore.authentication.ClientBearerAuthentication",
+        "authcore.authentication.UserBearerAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
 }
 
 
@@ -129,14 +134,32 @@ SWAGGER_SETTINGS = {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header",
-            "description": 'Enter: Bearer <your_token>',
-        }
-    }
+            "description": "Enter: Bearer <token>",
+        },
+    },
+    "USE_SESSION_AUTH": False,
+    "DEFAULT_SECURITY": [
+        {"Bearer": []},
+    ],
 }
+
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+# Trust Railway proxy for scheme/host
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+
+BASE_URL = os.getenv("BASE_URL")
+
+SWAGGER_SETTINGS = {
+    "DEFAULT_API_URL": BASE_URL,
+}
+
 
 
 # Internationalization
