@@ -135,3 +135,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sems_auth_service.settings")
+
+JWT_ISSUER = os.getenv("JWT_ISSUER")
+JWT_CLIENT_AUDIENCE = os.getenv("JWT_CLIENT_AUDIENCE")
+JWT_SECRET = os.getenv("JWT_SECRET")
+JWT_CLIENT_TTL = int(os.getenv("JWT_CLIENT_TTL", "3600"))
