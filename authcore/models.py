@@ -9,6 +9,30 @@ from django.contrib.auth.models import (
     BaseUserManager,
 )
 
+class ClientApp(models.Model):
+    name = models.CharField(max_length=100)
+    client_id = models.CharField(max_length=64, unique=True)
+    client_secret_hash = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def create_client(cls, name: str, client_id: str):
+        raw_secret = secrets.token_urlsafe(32)
+        client = cls.objects.create(
+            name=name,
+            client_id=client_id,
+            client_secret_hash=make_password(raw_secret),
+        )
+        return client, raw_secret
+
+    def verify_secret(self, raw_secret: str) -> bool:
+        return check_password(raw_secret, self.client_secret_hash)
+
+    def __str__(self):
+        return f"{self.name} ({self.client_id})"
+    
 
 class AuthUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -31,7 +55,10 @@ class AuthUserManager(BaseUserManager):
 
 
 class AuthUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True)
+    client = models.ForeignKey(
+        "authcore.ClientApp", on_delete=models.CASCADE, related_name="users"
+    )
+    email = models.EmailField()
     first_name = models.CharField(max_length=150, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
 
@@ -44,11 +71,15 @@ class AuthUser(AbstractBaseUser, PermissionsMixin):
 
     objects = AuthUserManager()
 
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "id"  
     REQUIRED_FIELDS = []
 
+    class Meta:
+        unique_together = ("email", "client")
+
     def __str__(self):
-        return self.email
+        return f"{self.email} @ {self.client.client_id}"
+
 
 
 class RefreshToken(models.Model):
@@ -86,30 +117,6 @@ class PasswordResetToken(models.Model):
     def __str__(self):
         return f"PasswordResetToken({self.user.email})"
 
-
-class ClientApp(models.Model):
-    name = models.CharField(max_length=100)
-    client_id = models.CharField(max_length=64, unique=True)
-    client_secret_hash = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    @classmethod
-    def create_client(cls, name: str, client_id: str):
-        raw_secret = secrets.token_urlsafe(32)
-        client = cls.objects.create(
-            name=name,
-            client_id=client_id,
-            client_secret_hash=make_password(raw_secret),
-        )
-        return client, raw_secret
-
-    def verify_secret(self, raw_secret: str) -> bool:
-        return check_password(raw_secret, self.client_secret_hash)
-
-    def __str__(self):
-        return f"{self.name} ({self.client_id})"
     
 class OneTimeCode(models.Model):
     PURPOSE_LOGIN = "login"
