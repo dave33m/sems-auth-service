@@ -34,3 +34,13 @@ jobs:
           DATABASE_URL: sqlite:///db.sqlite3
         run: |
           python manage.py check
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Mark deployment
+        run: echo "Deployment triggered. Railway will deploy automatically."
