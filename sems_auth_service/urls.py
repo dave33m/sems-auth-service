@@ -4,6 +4,8 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from authcore.authentication import ClientBearerAuthentication, UserBearerAuthentication
+
 schema_view = get_schema_view(
     openapi.Info(
         title="Sems Auth Service (SAS)",
@@ -11,7 +13,11 @@ schema_view = get_schema_view(
         description="Standalone identity provider for Sems ecosystem",
     ),
     public=True,
-    permission_classes=[permissions.AllowAny],
+    permission_classes=(permissions.AllowAny,),
+    authentication_classes=(
+        ClientBearerAuthentication,
+        UserBearerAuthentication,
+    ),
 )
 
 urlpatterns = [
