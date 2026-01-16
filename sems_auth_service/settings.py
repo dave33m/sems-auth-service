@@ -129,10 +129,15 @@ SWAGGER_SETTINGS = {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header",
-            "description": 'Enter: Bearer <your_token>',
-        }
-    }
+            "description": "Enter: Bearer <token>",
+        },
+    },
+    "USE_SESSION_AUTH": False,
+    "DEFAULT_SECURITY": [
+        {"Bearer": []},
+    ],
 }
+
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
