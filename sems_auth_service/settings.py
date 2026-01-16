@@ -115,6 +115,26 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+DEFAULT_FROM_EMAIL = "no-reply@sas.local"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+DEFAULT_FROM_EMAIL = os.getenv("EMAIL_FROM")
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": 'Enter: Bearer <your_token>',
+        }
+    }
+}
 
 
 # Internationalization
@@ -140,3 +160,4 @@ JWT_ISSUER = os.getenv("JWT_ISSUER")
 JWT_CLIENT_AUDIENCE = os.getenv("JWT_CLIENT_AUDIENCE")
 JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_CLIENT_TTL = int(os.getenv("JWT_CLIENT_TTL", "3600"))
+JWT_USER_TTL = int(os.getenv("JWT_CLIENT_TTL", "3600"))

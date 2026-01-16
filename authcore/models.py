@@ -110,3 +110,21 @@ class ClientApp(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.client_id})"
+    
+class OneTimeCode(models.Model):
+    PURPOSE_LOGIN = "login"
+    PURPOSE_RESET = "reset"
+
+    PURPOSE_CHOICES = [
+        (PURPOSE_LOGIN, "Login"),
+        (PURPOSE_RESET, "Password Reset"),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, related_name="otps")
+    code = models.CharField(max_length=6)
+    purpose = models.CharField(max_length=20, choices=PURPOSE_CHOICES)
+    is_used = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
